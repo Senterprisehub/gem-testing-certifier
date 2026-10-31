@@ -648,6 +648,11 @@
             margin-bottom: 8px;
         }
         
+        .qr-box canvas, .qr-box img {
+            width: 100% !important;
+            height: auto !important;
+        }
+        
         footer {
             margin-top: 36px;
             text-align: center;
@@ -1237,7 +1242,7 @@
                     <div class="sig-row">
                         <div class="sig-box" id="signBox-0"><img id="sigImg-0" style="max-width:220px;display:block;margin:0 auto"/><div id="sigName-0" class="muted">${signer}</div></div>
                         <div class="sig-box" id="qrBoxWrap-0">
-                            <div id="qrCodeContainer-0" style="display:inline-block; margin:0 auto; padding: 6px; background: white; border: 1px solid #e2e8f0; border-radius: 8px;"></div>
+                            <div id="qrCodeContainer-0" class="qr-box" style="width: 86px; height: 86px; display:inline-block; margin:0 auto; padding: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 8px;"></div>
                             <div class="muted" style="margin-top: 6px; font-size: 11px;">Scan to Verify</div>
                         </div>
                     </div>
@@ -1276,11 +1281,11 @@
             setTimeout(() => {
                 new QRCode(document.getElementById("qrCodeContainer-0"), {
                     text: verifyUrl,
-                    width: 90,
-                    height: 90,
+                    width: 256, // Increased for high resolution rendering
+                    height: 256, // Increased for high resolution rendering
                     colorDark: "#0f172a",
                     colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.L
+                    correctLevel: QRCode.CorrectLevel.M // Better error correction for dense URLs
                 });
             }, 100);
 
