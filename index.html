@@ -266,7 +266,7 @@
                 <p class="text-slate-600 mt-0.5">Certificate Verification System Component Architecture Module | ISO 9001:2015 Framework Execution</p>
             </div>
             <div class="text-slate-500">
-                Functional System Interface Engine v2.4.0
+                Functional System Interface Engine v2.5.0
             </div>
         </div>
     </footer>
@@ -313,6 +313,13 @@
         const downloadPdfMockBtn = document.getElementById('downloadPdfMockBtn');
 
         let base64ImageString = '';
+
+        // Priority array matrix containing available models to test sequentially
+        const CHANNELS_MODEL_MATRIX = [
+            'gemini-3.8-flash',
+            'gemini-2.5-flash',
+            'gemini-1.5-flash'
+        ];
 
         // Initialize state variables from storage
         window.addEventListener('DOMContentLoaded', () => {
@@ -443,6 +450,48 @@
             });
         });
 
+        // Loop worker executing multi-channel model validation sequences 
+        async function fetchGeminiAnalysisWithFallback(apiKey, payloadData, modelMatrixIndex = 0) {
+            if (modelMatrixIndex >= CHANNELS_MODEL_MATRIX.length) {
+                throw new Error("All configured ecosystem models inside request fallback channels failed validation.");
+            }
+
+            const activeModel = CHANNELS_MODEL_MATRIX[modelMatrixIndex];
+            notify(`Attempting content generation pipeline using model: ${activeModel}...`, 'info');
+
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payloadData)
+                });
+
+                const resultJson = await response.json();
+
+                // If error is returned or message indicates model deprecation/unavailability
+                if (!response.ok || resultJson.error) {
+                    const errorMsg = resultJson.error?.message || '';
+                    console.warn(`Model ${activeModel} pipeline failure:`, errorMsg);
+                    
+                    if (errorMsg.includes('longer available') || errorMsg.includes('not found') || response.status === 404) {
+                        return await fetchGeminiAnalysisWithFallback(apiKey, payloadData, modelMatrixIndex + 1);
+                    }
+                    throw new Error(errorMsg || `HTTP Core Exception Error: ${response.status}`);
+                }
+
+                return { resultData: resultJson, successfulModel: activeModel };
+            } catch (fetchError) {
+                console.error(`Error on network channel tracking index ${modelMatrixIndex}:`, fetchError);
+                // Fall back if there are remaining models left to evaluate
+                if (modelMatrixIndex < CHANNELS_MODEL_MATRIX.length - 1) {
+                    return await fetchGeminiAnalysisWithFallback(apiKey, payloadData, modelMatrixIndex + 1);
+                }
+                throw fetchError;
+            }
+        }
+
         // Automated Core Image Processing Logic via Gemini API Core Vision Systems
         analyseBtn.addEventListener('click', async () => {
             const apiKey = apiKeyInput.value.trim() || localStorage.getItem('gemini_api_key');
@@ -460,8 +509,6 @@
             analyseBtn.disabled = true;
             analyseBtn.textContent = '🔄 Extracting...';
             notify('Uploading cryptographic asset payload to Gemini multimodal pipelines. Parsing signature metrics data properties...', 'info');
-
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
             const promptText = `Analyze this image of a gemstone for a gemological laboratory identification certificate. Return a clean JSON object containing mineral property metrics estimation fields. 
             Do not provide text wrappers or code block strings around the response. Return strictly standard valid parseable JSON content matching exactly this property format:
@@ -491,19 +538,10 @@
             };
 
             try {
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const data = await response.json();
-                    throw new Error(data.error?.message || `Network error exception: code ${response.status}`);
-                }
-
-                const resultData = await response.json();
-                let outputText = resultData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+                // Execute multi-channel evaluation
+                const fallbackResponse = await fetchGeminiAnalysisWithFallback(apiKey, payload);
+                
+                let outputText = fallbackResponse.resultData.candidates?.[0]?.content?.parts?.[0]?.text || '';
                 
                 // Content cleanup configurations sanitization passes strip markdown elements if generated
                 outputText = outputText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -525,7 +563,7 @@
                     b.display.textContent = b.input.value || '-';
                 });
 
-                notify('Gemstone analysis profile parsed successfully. Metrics have updated inside the live certificate canvas area.', 'success');
+                notify(`Gemstone analysis profile parsed successfully via [${fallbackResponse.successfulModel}]. Metrics have updated inside the live certificate canvas area.`, 'success');
 
             } catch (err) {
                 console.error(err);
@@ -538,14 +576,11 @@
 
         // Native Data Export Action Triggers handling frameworks
         downloadPngBtn.addEventListener('click', () => {
-            // High fidelity printing rendering backup mechanism using direct SVG compilation structures 
-            // since third-party rendering plugins like html2canvas violate standard sandbox dependency policies.
             notify('Preparing structural asset layers mapping for download...', 'info');
             
             setTimeout(() => {
                 const certBox = document.getElementById('certificateContainer');
                 
-                // Basic fall-back mechanism to handle local printing profiles contexts triggers
                 const printWindow = window.open('', '_blank');
                 printWindow.document.write(`
                     <html>
