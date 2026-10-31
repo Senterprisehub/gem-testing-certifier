@@ -3,615 +3,1529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gem Testing (Identification) Laboratory — S R Nexus</title>
-    <!-- Tailwind CSS for robust layout and styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>GEM TESTING (IDENTIFICATION) LABORATORY — S R Nexus</title>
+    <!-- Use Inter font for a modern, clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Great+Vibes&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Load required libraries for PDF generation and screenshot -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+        :root {
+            --bgA: #0f172a;
+            --bgB: #0f4c81;
+            --panel: #ffffff;
+            --muted: #6b7280;
+            --accent: #3b82f6;
+            --gold: #c9a227;
+            --radius: 14px;
+            --glass: rgba(255, 255, 255, 0.06);
+            --forest-green: #228B22;
         }
-        .cert-border {
-            border: 8px double #1e3a8a;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+            color: var(--bgA);
+            background: linear-gradient(180deg, #eef2ff, #f8fafc);
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 18px auto;
+            padding: 18px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--bgB), #1e3a8a);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #60a5fa, #1e40af);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .sub {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        main {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--panel);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: 0 16px 40px rgba(16, 24, 40, 0.06);
+            border: 1px solid rgba(16, 24, 40, 0.04);
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--bgB);
+            margin: 0 0 8px 0;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .upload-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .file-btn {
+            background: linear-gradient(180deg, var(--accent), #1e40af);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 0;
+            cursor: pointer;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .file-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .file-btn input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(16, 24, 40, 0.06);
+            padding: 10px 12px;
+            border-radius: 12px;
+            color: var(--bgB);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-ghost:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-accent {
+            background: linear-gradient(180deg, var(--accent), #1e40af);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-accent:hover {
+            transform: translateY(-2px);
+        }
+
+        .small {
+            font-size: 13px;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .metric {
+            background: linear-gradient(180deg, #fff, #f8fbff);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(16, 24, 40, 0.04);
+        }
+
+        .k {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .v {
+            font-weight: 700;
+        }
+
+        .cert {
+            position: relative;
+            background: linear-gradient(180deg, #fff, #fcfdff);
+            border-radius: 14px;
+            padding: 18px;
+            border: 1px solid rgba(16, 24, 40, 0.06);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .cert .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            font-family: Georgia, serif;
+            font-weight: 800;
+            font-size: 120px;
+            line-height: 1.2;
+            text-align: center;
+            color: rgba(16, 24, 40, 0.04);
+            pointer-events: none;
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        .cert-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(16, 24, 40, 0.04);
+            padding-bottom: 10px;
+        }
+
+        .cert-title {
+            font-weight: 700;
+            font-size: 32px;
+            color: var(--bgB);
+        }
+        
+        .cert-meta {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .cert-body {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .thumb {
+            flex-basis: 34%;
+            min-width: 180px;
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(16, 24, 40, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cert-table {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .ct-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(16, 24, 40, 0.03);
+            flex-wrap: wrap;
+        }
+        
+        .ct-row .key {
+            color: var(--muted);
+            width: 38%;
+        }
+        
+        .ct-row .val {
+            font-weight: 700;
+            flex: 1;
+        }
+        
+        .inline, .inline-input {
+            border: 0;
+            background: transparent;
+            border-bottom: 1px dashed rgba(16, 24, 40, 0.06);
+            padding: 2px 5px;
+            font-weight: 700;
+            width: 100%;
+            text-align: right;
+            outline: none;
+        }
+        
+        .inline-span {
+            border: 0;
+            background: transparent;
+            border-bottom: 1px dashed rgba(16, 24, 40, 0.06);
+            padding: 2px 5px;
+            font-weight: 700;
+            text-align: right;
+            outline: none;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .inline-div {
+            font-weight: 700;
+            padding: 2px 5px;
+            word-wrap: break-word; 
+            overflow-wrap: break-word;
+            text-align: right;
+        }
+
+        #imagePreviewSection {
+            display: none;
+            text-align: center;
+            padding: 16px;
+        }
+        
+        #uploadedImagePreview {
+            max-width: 70%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 12px auto;
+        }
+
+        .sig-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .sig-box {
+            flex: 1;
+            text-align: center;
+            border-top: 1px solid rgba(16, 24, 40, 0.06);
+            padding-top: 8px;
+            color: var(--muted);
+        }
+
+        .cert canvas {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .controls-bottom {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--bgA);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast-success {
+            background: #10b981;
+        }
+
+        .toast-error {
+            background: #ef4444;
+        }
+        
+        .toast-warning {
+            background: #f59e0b;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin: -8px 0 0 -8px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- Responsive Design Adjustments --- */
+        @media (max-width: 900px) {
+            .thumb {
+                flex-basis: 100%;
+                margin-bottom: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .brand {
+                flex-direction: column;
+                justify-content: center;
+            }
+            .cert-head {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+            }
+            .cert-meta {
+                text-align: center;
+                width: 100%;
+            }
+            .grid2 {
+                grid-template-columns: 1fr;
+            }
+            .sig-row {
+                flex-direction: column;
+                gap: 24px;
+            }
+            .cert-title {
+                font-size: 24px;
+            }
+            .cert .watermark {
+                font-size: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wrap {
+                padding: 10px;
+                margin: 0 auto;
+            }
+            .upload-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .upload-row > * {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+            .upload-row > label {
+                margin-bottom: 0; 
+            }
+            .controls-bottom {
+                flex-direction: column;
+            }
+            .controls-bottom > button {
+                width: 100%;
+            }
+            .ct-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .ct-row .key {
+                width: 100%;
+                margin-bottom: 4px;
+            }
+            .inline, .inline-input, .inline-span, .inline-div {
+                text-align: left;
+            }
+            .cert {
+                padding: 12px;
+            }
+            input[type="date"].inline-input {
+                text-align: center !important;
+            }
+            .hologram-badge {
+                padding: 16px;
+            }
+            .hologram-title {
+                font-size: 18px;
+            }
+            .hologram-sub {
+                font-size: 11px;
+            }
+            .verify-table th, .verify-table td {
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+            .verify-table th {
+                border-bottom: none;
+                padding-bottom: 2px;
+            }
+            .verify-table td {
+                padding-top: 2px;
+                margin-bottom: 8px;
+            }
+        }
+
+        /* --- Verification Hologram View Styles --- */
+        #verifyView {
+            display: none;
+            max-width: 650px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .hologram-badge {
+            position: relative;
+            background: linear-gradient(135deg, #f9ce34, #ee2a7b, #6228d7, #228B22, #0f4c81);
+            background-size: 300% 300%;
+            animation: holoGradient 5s ease infinite;
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin: 24px 0;
+            overflow: hidden;
+            font-family: 'Cinzel', serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        .hologram-badge::before {
+            content: '';
+            position: absolute;
+            top: -100%; left: -100%; width: 300%; height: 300%;
+            background: linear-gradient(45deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 60%);
+            animation: holoShine 3s linear infinite;
+        }
+
+        .hologram-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            letter-spacing: 1px;
+        }
+        
+        .hologram-sub {
+            position: relative;
+            z-index: 2;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            opacity: 0.9;
+        }
+
+        @keyframes holoGradient { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+        @keyframes holoShine { 0% { transform: translate(-30%, -30%) rotate(45deg); } 100% { transform: translate(30%, 30%) rotate(45deg); } }
+
+        .verify-table {
+            width: 100%;
+            text-align: left;
+            margin-top: 24px;
+            border-collapse: collapse;
+        }
+
+        .verify-table th, .verify-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .verify-table th { color: var(--muted); width: 40%; font-weight: 500; }
+        .verify-table td { font-weight: 700; color: var(--bgA); }
+
+        .settings-panel {
+            margin-top: 12px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .settings-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .api-key-input, .model-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            margin-top: 6px;
+            font-family: inherit;
+            background: #fff;
+        }
+        
+        .api-key-help {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .stone-entry {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(16, 24, 40, 0.08);
+        }
+        
+        .stone-heading {
+            font-weight: 700;
+            color: var(--bgB);
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            margin-top: 36px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.8;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800">
-
-    <!-- Header / Top Banner -->
-    <header class="bg-indigo-900 text-white py-6 px-4 shadow-md text-center">
-        <h1 class="text-2xl md:text-3xl font-bold tracking-wide">GEM TESTING (IDENTIFICATION) LABORATORY</h1>
-        <p class="text-indigo-200 text-sm mt-1 font-medium tracking-widest">SR NEXUS — MODERN LAB INTERFACE</p>
-        <div class="mt-2 text-xs bg-indigo-800 inline-block px-3 py-1 rounded text-indigo-300">An ISO 9001:2015 Certified Company</div>
-    </header>
-
-    <!-- Main Content Container -->
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-5xl">
-        
-        <!-- Workflow Sub-banner -->
-        <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap justify-around items-center text-center gap-2 border border-slate-100">
-            <span class="text-sm font-semibold text-indigo-700 flex items-center">
-                <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 inline-flex items-center justify-center mr-2 text-xs">1</span> Simplified Workflow
-            </span>
-            <span class="text-sm font-semibold text-indigo-700 flex items-center">
-                <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 inline-flex items-center justify-center mr-2 text-xs">2</span> Direct Analysis
-            </span>
-            <span class="text-sm font-semibold text-indigo-700 flex items-center">
-                <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 inline-flex items-center justify-center mr-2 text-xs">3</span> Editable Certificate
-            </span>
-        </div>
-
-        <!-- API Configuration Panel -->
-        <section class="bg-white rounded-xl shadow-sm p-6 mb-8 border border-slate-200">
-            <h2 class="text-lg font-bold text-slate-900 mb-2 flex items-center">
-                🔑 Gemini API Configuration
-            </h2>
-            <p class="text-slate-500 text-xs mb-4">
-                Required for real-time automated gemstone extraction and feature evaluation. 
-                Get your API key from <a href="https://aistudio.google.com/" target="_blank" class="text-indigo-600 underline font-medium">Google AI Studio</a>. 
-                Your key remains securely isolated within your local browser runtime environment.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-3">
-                <input type="password" id="apiKeyInput" placeholder="AIzaSy..." class="flex-grow p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
-                <button id="saveKeyBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm px-5 py-2.5 rounded-lg shadow-sm transition">
-                    Save Key
-                </button>
+<body>
+    <div class="wrap">
+        <header>
+            <div class="brand">
+                <div class="logo">SR</div>
+                <div>
+                    <h1>GEM TESTING (IDENTIFICATION)</h1>
+                    <div class="sub">S R Nexus — Modern Lab Interface</div>
+                </div>
             </div>
-            <div id="apiStatusMessage" class="hidden mt-3 text-xs font-medium"></div>
-        </section>
+            <div class="muted">Simplified Workflow • Direct Analysis • Editable Certificate</div>
+        </header>
 
-        <!-- Dynamic Feedback Panel -->
-        <div id="globalNotification" class="hidden mb-6 p-4 rounded-xl text-sm font-medium border shadow-sm"></div>
+        <main>
+            <!-- 0) AI Settings Section -->
+            <section class="card" id="settingsSection">
+                <h3 class="section-title">AI Engine Settings</h3>
+                <div class="muted">Configure the AI models and API access for analysis.</div>
+                <div class="settings-panel">
+                    <div>
+                        <label for="modelPicker" class="k">AI Model Selection</label>
+                        <select id="modelPicker" class="model-select">
+                            <option value="auto">Auto-Choose (Best Available)</option>
+                            <option value="gemini-3-flash-preview">Gemini 3 Flash (Fast & Modern)</option>
+                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (High Accuracy)</option>
+                            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Fallback)</option>
+                        </select>
+                        <div class="api-key-help">Auto-Choose will fallback to other models if the primary fails.</div>
+                    </div>
+                    <div>
+                        <label for="apiKeyInput" class="k">Gemini API Key (Required for Localhost)</label>
+                        <input type="password" id="apiKeyInput" class="api-key-input" placeholder="AIzaSy...">
+                        <div class="api-key-help">
+                            Running locally? Get your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent)">Google AI Studio</a>.
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Working Lab Split Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Interactive Left Controls Panel -->
-            <div class="lg:col-span-5 space-y-6">
-                <!-- Step 1: Image Sourcing & Action Triggers -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">1) Source Gemstone Data</h3>
-                    
-                    <label class="block mb-4">
-                        <span class="sr-only">Choose File</span>
-                        <input type="file" id="gemImageUpload" accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+            <!-- 1) Upload and Controls -->
+            <section class="card">
+                <h3 class="section-title">1) Upload Image</h3>
+                <div class="upload-row">
+                    <label class="file-btn">
+                        Choose Photo
+                        <input id="fileInput" type="file" accept="image/*">
                     </label>
-
-                    <div class="grid grid-cols-3 gap-2">
-                        <button id="analyseBtn" disabled class="col-span-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-3 rounded-lg text-sm shadow-sm transition flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed">
-                            ⚡ Analyze Image
-                        </button>
-                        <button id="resetFormBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-3 rounded-lg text-sm transition text-center">
-                            Reset
-                        </button>
-                    </div>
+                    <button id="generateCertBtn" class="btn-accent" disabled>Generate Certificate</button>
+                    <button id="resetBtn" class="btn-ghost" disabled>Reset</button>
                 </div>
+                <p class="muted" style="margin-top:12px; margin-bottom:0;">Upload a clear image of the gemstone. The entire image will be used for analysis.</p>
+            </section>
 
-                <!-- Step 2: Source Image Viewfinder/Preview Container -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3">2) Image Preview</h3>
-                    <div id="imagePlaceholder" class="border-2 border-dashed border-slate-300 rounded-xl h-48 flex flex-col justify-center items-center text-center p-4 bg-slate-50">
-                        <svg class="w-8 h-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <p class="text-xs text-slate-500">Upload a clear photo to preview the raw asset analyzed by the vision core engine.</p>
-                    </div>
-                    <img id="imageDisplay" class="hidden w-full max-h-64 object-contain rounded-xl shadow-sm border border-slate-100 mx-auto">
+            <!-- 2) Image Preview - This is the new section for immediate feedback -->
+            <section class="card" id="imagePreviewSection">
+                <h3 class="section-title">2) Image Preview</h3>
+                <div class="muted">This is the image you selected for analysis.</div>
+                <img id="uploadedImagePreview" src="" alt="Image preview of uploaded gemstone">
+            </section>
+
+            <!-- 3) Analysis Results -->
+            <section class="card">
+                <h3 class="section-title">3) Analysis Results</h3>
+                <div class="muted">Analysis runs on the full uploaded image. You can edit any field in the certificate preview below before downloading.</div>
+                <div id="metrics" class="grid2" style="margin-top:12px"></div>
+            </section>
+
+            <!-- 4) Certificate -->
+            <section class="card">
+                <h3 class="section-title">4) Certificate Preview</h3>
+                <div class="controls-bottom">
+                    <button id="downloadBtn" class="btn-accent" disabled>Download PDF</button>
+                    <button id="downloadImageBtn" class="btn-ghost" disabled>Download Image</button>
                 </div>
-
-                <!-- Step 3: Granular Lab Value Fine-Tuning Container -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-2">3) Analysis Metrics (Edit Directly)</h3>
-                    <p class="text-slate-400 text-xs mb-4">Values updated here instantly synchronize onto the live client certificate document template layout.</p>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Certificate Number</label>
-                            <input type="text" id="metaCertNo" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Object/Identity Identification</label>
-                            <input type="text" id="metaIdent" value="Natural Gemstone" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Gemstone Variety</label>
-                            <input type="text" id="metaVariety" placeholder="e.g. Natural Sapphire" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Weight (Cts)</label>
-                                <input type="text" id="metaWeight" placeholder="e.g. 3.42 Cts" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Dimensions</label>
-                                <input type="text" id="metaDim" placeholder="e.g. 9.1 x 7.2 mm" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cut / Shape</label>
-                                <input type="text" id="metaCut" placeholder="Oval Faceted" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Coloring Profiles</label>
-                                <input type="text" id="metaColor" placeholder="Deep Blue" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Optical Metrics / Refractive Index</label>
-                            <input type="text" id="metaOptical" placeholder="1.762 - 1.770" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Microscopic Inclusions & Integrity Comments</label>
-                            <textarea id="metaComments" rows="2" class="w-full p-2 border border-slate-200 rounded text-sm bg-slate-50 focus:bg-white focus:ring-1 focus:ring-indigo-500 outline-none resize-none" placeholder="Indications of thermal enhancement absent..."></textarea>
-                        </div>
-                    </div>
+                <div id="certContainer" style="margin-top: 16px;">
+                    <!-- Dynamically generated certificates will be added here -->
                 </div>
-            </div>
+            </section>
+        </main>
+        
+        <footer>
+            © 2020 GEM TESTING (IDENTIFICATION) LABORATORY. All rights reserved.<br>
+            Certificate verification system | An ISO 9001:2015 Certified Company
+        </footer>
+    </div>
 
-            <!-- Authentic Live Canvas Render Frame -->
-            <div class="lg:col-span-7 space-y-4">
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">4) Document Preview Structure</h3>
-                        <div class="flex gap-2">
-                            <button id="downloadPngBtn" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold text-xs py-1.5 px-3 rounded border border-indigo-200 transition">
-                                Download Image
-                            </button>
-                            <button id="downloadPdfMockBtn" class="bg-slate-800 text-white hover:bg-slate-900 font-semibold text-xs py-1.5 px-3 rounded transition">
-                                Download PDF
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Certificate Box Template Element Container for Client Export Processing Canvas -->
-                    <div id="certificateContainer" class="bg-white p-6 md:p-8 rounded shadow-inner cert-border border-indigo-900 max-w-full relative mx-auto overflow-hidden">
-                        
-                        <!-- Watermarked Decorative Background Pattern Matrix Overlay -->
-                        <div class="absolute inset-0 opacity-[0.03] pointer-events-none flex flex-wrap justify-center items-center gap-12 font-bold tracking-widest text-indigo-900 select-none text-md transform rotate-12">
-                            <span>SR NEXUS LABS</span><span>SR NEXUS LABS</span><span>SR NEXUS LABS</span><span>SR NEXUS LABS</span>
-                            <span>SR NEXUS LABS</span><span>SR NEXUS LABS</span><span>SR NEXUS LABS</span><span>SR NEXUS LABS</span>
-                            <span>SR NEXUS LABS</span><span>SR NEXUS LABS</span><span>SR NEXUS LABS</span><span>SR NEXUS LABS</span>
-                        </div>
-
-                        <!-- Certificate Header -->
-                        <div class="text-center border-b border-slate-200 pb-4 relative z-10">
-                            <h4 class="text-lg md:text-xl font-bold text-slate-900 tracking-wide uppercase">Gemstone Identification Report</h4>
-                            <p class="text-xs text-indigo-800 font-semibold tracking-wider mt-0.5">S R NEXUS TECHNICAL TESTING CENTER</p>
-                            <p class="text-[10px] text-slate-400">Authentic Mineral Identification Data Verification Structure</p>
-                        </div>
-
-                        <!-- Certificate Main Grid Body -->
-                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6 items-start relative z-10">
-                            
-                            <!-- Left: Verified Micro-Image Inset Frame -->
-                            <div class="md:col-span-4 flex flex-col items-center">
-                                <div class="w-full aspect-square bg-slate-50 border border-slate-300 rounded p-1 flex items-center justify-center overflow-hidden shadow-sm">
-                                    <img id="certImagePreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23fafafa'/><text x='50%' y='50%' font-size='10' font-family='sans-serif' fill='%23cccccc' text-anchor='middle' dy='.3em'>No Photo</text></svg>" class="w-full h-full object-cover rounded-sm">
-                                </div>
-                                <div class="mt-3 text-center">
-                                    <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold block">Report Registry Identification ID</span>
-                                    <span id="certNoDisplay" class="text-xs font-bold text-slate-700 tracking-wider">SR-2026-PENDING</span>
-                                </div>
-                            </div>
-
-                            <!-- Right: Laboratory Parameter Metrics Table -->
-                            <div class="md:col-span-8 w-full text-xs">
-                                <table class="w-full border-collapse">
-                                    <tbody>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider w-1/3">Identification:</td>
-                                            <td id="certIdentDisplay" class="py-2 font-bold text-slate-900">Natural Gemstone</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider">Variety:</td>
-                                            <td id="certVarietyDisplay" class="py-2 font-bold text-indigo-900 italic text-sm">-</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider">Weight:</td>
-                                            <td id="certWeightDisplay" class="py-2 text-slate-800 font-semibold">-</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider">Dimensions:</td>
-                                            <td id="certDimDisplay" class="py-2 text-slate-800 font-semibold">-</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider">Shape / Cut:</td>
-                                            <td id="certCutDisplay" class="py-2 text-slate-800">-</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider">Color:</td>
-                                            <td id="certColorDisplay" class="py-2 text-slate-800">-</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100">
-                                            <td class="py-2 font-medium text-slate-500 uppercase tracking-wider">Refractive Index:</td>
-                                            <td id="certOpticalDisplay" class="py-2 text-slate-800">-</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2" class="pt-3">
-                                                <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Comments & Diagnostics:</span>
-                                                <div id="certCommentsDisplay" class="p-2 bg-slate-50 border border-slate-100 rounded text-slate-600 leading-relaxed italic text-[11px] min-h-[44px]">
-                                                    Awaiting structural system inputs...
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Footer Signatures Space -->
-                        <div class="mt-8 pt-4 border-t border-slate-200 flex justify-between items-center text-[10px] relative z-10 text-slate-400">
-                            <div>
-                                <p>Date: <span id="certDateDisplay">--/--/----</span></p>
-                                <p class="mt-0.5">Verification Signature System Active</p>
-                            </div>
-                            <div class="text-right">
-                                <div class="inline-block border-b border-slate-300 w-24 h-6 mb-1 relative">
-                                    <span class="absolute bottom-0 right-2 font-serif text-slate-400 italic text-xs tracking-wider select-none opacity-60">NexusCore</span>
-                                </div>
-                                <p class="uppercase tracking-wider font-semibold text-slate-500">Authorized Gemologist</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Verification Overlay View -->
+    <div id="verifyView">
+        <div class="logo" style="margin: 0 auto 20px;">SR</div>
+        <h2 style="margin: 0; color: var(--bgB);">Authentication Verified</h2>
+        <div class="hologram-badge">
+            <div class="hologram-title">CERTIFICATE OF AUTHENTICATION</div>
+            <div class="hologram-sub">SECURE DIGITAL VERIFICATION SYSTEM</div>
         </div>
-    </main>
+        <p class="muted">This item has been officially authenticated and recorded by the S R Nexus GEM TESTING (IDENTIFICATION) LABORATORY.</p>
+        
+        <table class="verify-table">
+            <tbody id="verifyTableBody">
+                <!-- Populated dynamically upon scan -->
+            </tbody>
+        </table>
+        
+        <button onclick="window.location.href = window.location.href.split('?')[0]" class="btn-ghost" style="margin-top: 30px; width: 100%;">Return to Main System</button>
+    </div>
 
-    <!-- Footer Banner Platform Information -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-6 px-4 mt-12 border-t border-slate-800">
-        <div class="container mx-auto max-w-5xl flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <div>
-                <p>&copy; 2026 GEM TESTING (IDENTIFICATION) LABORATORY. All rights reserved.</p>
-                <p class="text-slate-600 mt-0.5">Certificate Verification System Component Architecture Module | ISO 9001:2015 Framework Execution</p>
-            </div>
-            <div class="text-slate-500">
-                Functional System Interface Engine v2.5.0
-            </div>
-        </div>
-    </footer>
+    <div class="toast-container" id="toastContainer"></div>
 
-    <!-- App Logic Hook Core Execution Engine Script -->
     <script>
-        // DOM Nodes Mapping
+        // --- Element and State Management ---
+        const fileInput = document.getElementById('fileInput');
+        const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+        const imagePreviewSection = document.getElementById('imagePreviewSection');
+        const resetBtn = document.getElementById('resetBtn');
+        const generateCertBtn = document.getElementById('generateCertBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadImageBtn = document.getElementById('downloadImageBtn');
+        const metricsEl = document.getElementById('metrics');
+        const toastContainer = document.getElementById('toastContainer');
+        const certContainer = document.getElementById('certContainer');
         const apiKeyInput = document.getElementById('apiKeyInput');
-        const saveKeyBtn = document.getElementById('saveKeyBtn');
-        const apiStatusMessage = document.getElementById('apiStatusMessage');
-        const gemImageUpload = document.getElementById('gemImageUpload');
-        const analyseBtn = document.getElementById('analyseBtn');
-        const resetFormBtn = document.getElementById('resetFormBtn');
-        const imagePlaceholder = document.getElementById('imagePlaceholder');
-        const imageDisplay = document.getElementById('imageDisplay');
-        const certImagePreview = document.getElementById('certImagePreview');
-        const globalNotification = document.getElementById('globalNotification');
+        const modelPicker = document.getElementById('modelPicker');
 
-        // Form Control Inputs
-        const metaCertNo = document.getElementById('metaCertNo');
-        const metaIdent = document.getElementById('metaIdent');
-        const metaVariety = document.getElementById('metaVariety');
-        const metaWeight = document.getElementById('metaWeight');
-        const metaDim = document.getElementById('metaDim');
-        const metaCut = document.getElementById('metaCut');
-        const metaColor = document.getElementById('metaColor');
-        const metaOptical = document.getElementById('metaOptical');
-        const metaComments = document.getElementById('metaComments');
+        // State to hold the original image data and last analysis results
+        let originalImage = null;
+        let base64Image = null;
+        let previewURL = null;
+        let lastAnalysisData = [];
+        
+        // Load settings from localStorage
+        const savedApiKey = localStorage.getItem('gemini_api_key');
+        if (savedApiKey) apiKeyInput.value = savedApiKey;
+        
+        const savedModel = localStorage.getItem('gemini_preferred_model');
+        if (savedModel) modelPicker.value = savedModel;
 
-        // Certificate Display Nodes
-        const certNoDisplay = document.getElementById('certNoDisplay');
-        const certIdentDisplay = document.getElementById('certIdentDisplay');
-        const certVarietyDisplay = document.getElementById('certVarietyDisplay');
-        const certWeightDisplay = document.getElementById('certWeightDisplay');
-        const certDimDisplay = document.getElementById('certDimDisplay');
-        const certCutDisplay = document.getElementById('certCutDisplay');
-        const certColorDisplay = document.getElementById('certColorDisplay');
-        const certOpticalDisplay = document.getElementById('certOpticalDisplay');
-        const certCommentsDisplay = document.getElementById('certCommentsDisplay');
-        const certDateDisplay = document.getElementById('certDateDisplay');
+        // Save settings on change
+        apiKeyInput.addEventListener('change', () => {
+            localStorage.setItem('gemini_api_key', apiKeyInput.value.trim());
+        });
+        
+        modelPicker.addEventListener('change', () => {
+            localStorage.setItem('gemini_preferred_model', modelPicker.value);
+            showToast(`Model set to ${modelPicker.options[modelPicker.selectedIndex].text}`, 'success', 2000);
+        });
 
-        // Export Handles
-        const downloadPngBtn = document.getElementById('downloadPngBtn');
-        const downloadPdfMockBtn = document.getElementById('downloadPdfMockBtn');
-
-        let base64ImageString = '';
-
-        // Priority array matrix containing available models to test sequentially
-        const CHANNELS_MODEL_MATRIX = [
-            'gemini-3.8-flash',
-            'gemini-2.5-flash',
-            'gemini-1.5-flash'
-        ];
-
-        // Initialize state variables from storage
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedKey = localStorage.getItem('gemini_api_key');
-            if (savedKey) {
-                apiKeyInput.value = savedKey;
-                showApiStatus('API key loaded from browser cache storage.', 'text-emerald-600');
+        // --- Toast notification system ---
+        function showToast(message, type = 'default', duration = 4000) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type !== 'default' ? 'toast-' + type : ''}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    if (toastContainer.contains(toast)) {
+                       toastContainer.removeChild(toast);
+                    }
+                }, 500);
+            }, duration);
+        }
+        
+        // --- Helper function to convert image to base64 ---
+        function getBase64Image(img) {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+            return dataURL.replace(/^data:image\/(png|jpeg);base64,/, "");
+        }
+        
+        // Function to clean up the temporary URL to avoid memory leaks
+        function cleanupPreviewURL() {
+            if (previewURL) {
+                URL.revokeObjectURL(previewURL);
+                previewURL = null;
             }
-            generateCertNumber();
-            setTodayDate();
-        });
-
-        // Initialize unique certificate numbers
-        function generateCertNumber() {
-            const timestamp = Date.now().toString().slice(-6);
-            const rand = Math.floor(1000 + Math.random() * 9000);
-            const formatted = `SR-${new Date().getFullYear()}-${timestamp}${rand}`;
-            metaCertNo.value = formatted;
-            certNoDisplay.textContent = formatted;
         }
 
-        function setTodayDate() {
-            const today = new Date();
-            const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const yyyy = today.getFullYear();
-            certDateDisplay.textContent = `${dd}/${mm}/${yyyy}`;
-        }
-
-        // UI Event Listeners for synchronizing form edits instantly with the card view
-        const bindingInputs = [
-            { input: metaCertNo, display: certNoDisplay },
-            { input: metaIdent, display: certIdentDisplay },
-            { input: metaVariety, display: certVarietyDisplay },
-            { input: metaWeight, display: certWeightDisplay },
-            { input: metaDim, display: certDimDisplay },
-            { input: metaCut, display: certCutDisplay },
-            { input: metaColor, display: certColorDisplay },
-            { input: metaOptical, display: certOpticalDisplay },
-            { input: metaComments, display: certCommentsDisplay }
-        ];
-
-        bindingInputs.forEach(binding => {
-            binding.input.addEventListener('input', () => {
-                binding.display.textContent = binding.input.value || '-';
-            });
-        });
-
-        // API Key Persistence Layer
-        saveKeyBtn.addEventListener('click', () => {
-            const val = apiKeyInput.value.trim();
-            if (!val) {
-                localStorage.removeItem('gemini_api_key');
-                showApiStatus('Storage cleared. Key removed.', 'text-amber-600');
+        // --- Core Application Workflow ---
+        // New logic to handle image preview using URL.createObjectURL
+        fileInput.addEventListener('change', async (e) => {
+            cleanupPreviewURL();
+            const file = e.target.files && e.target.files[0];
+            if (!file) {
                 return;
             }
-            localStorage.setItem('gemini_api_key', val);
-            showApiStatus('API Key saved successfully to device cache.', 'text-emerald-600');
-        });
-
-        function showApiStatus(msg, colorClass) {
-            apiStatusMessage.textContent = msg;
-            apiStatusMessage.className = `mt-3 text-xs font-medium ${colorClass}`;
-            apiStatusMessage.classList.remove('hidden');
-        }
-
-        function notify(msg, type = 'info') {
-            globalNotification.textContent = msg;
-            globalNotification.className = "mb-6 p-4 rounded-xl text-sm font-medium border shadow-sm ";
-            if (type === 'error') {
-                globalNotification.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
-            } else if (type === 'success') {
-                globalNotification.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
-            } else {
-                globalNotification.classList.add('bg-indigo-50', 'text-indigo-800', 'border-indigo-200');
-            }
-            globalNotification.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Image Sourcing Handler
-        gemImageUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                base64ImageString = evt.target.result.split(',')[1];
-                
-                // Show in left interactive previews
-                imagePlaceholder.classList.add('hidden');
-                imageDisplay.src = evt.target.result;
-                imageDisplay.classList.remove('hidden');
-
-                // Mirror inside authentic certificate container context instantly
-                certImagePreview.src = evt.target.result;
-                
-                // Active trigger processing engine
-                analyseBtn.disabled = false;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Clear layout application assets
-        resetFormBtn.addEventListener('click', () => {
-            gemImageUpload.value = '';
-            base64ImageString = '';
-            imagePlaceholder.classList.remove('hidden');
-            imageDisplay.classList.add('hidden');
-            imageDisplay.src = '';
-            certImagePreview.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100%' height='100%' fill='%23fafafa'/><text x='50%' y='50%' font-size='10' font-family='sans-serif' fill='%23cccccc' text-anchor='middle' dy='.3em'>No Photo</text></svg>";
-            analyseBtn.disabled = true;
-            globalNotification.classList.add('hidden');
-            
-            // Re-populate basic baseline settings parameters
-            generateCertNumber();
-            metaIdent.value = "Natural Gemstone";
-            metaVariety.value = "";
-            metaWeight.value = "";
-            metaDim.value = "";
-            metaCut.value = "";
-            metaColor.value = "";
-            metaOptical.value = "";
-            metaComments.value = "";
-
-            bindingInputs.forEach(b => {
-                b.display.textContent = b.input.value || '-';
-            });
-        });
-
-        // Loop worker executing multi-channel model validation sequences 
-        async function fetchGeminiAnalysisWithFallback(apiKey, payloadData, modelMatrixIndex = 0) {
-            if (modelMatrixIndex >= CHANNELS_MODEL_MATRIX.length) {
-                throw new Error("All configured ecosystem models inside request fallback channels failed validation.");
-            }
-
-            const activeModel = CHANNELS_MODEL_MATRIX[modelMatrixIndex];
-            notify(`Attempting content generation pipeline using model: ${activeModel}...`, 'info');
-
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
 
             try {
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payloadData)
+                showToast('Processing image...', 'default', 3000);
+                
+                previewURL = URL.createObjectURL(file);
+                uploadedImagePreview.src = previewURL;
+                imagePreviewSection.style.display = 'block';
+
+                const reader = new FileReader();
+                const dataUrl = await new Promise((resolve, reject) => {
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                
+                const img = new Image();
+                await new Promise((resolve, reject) => {
+                    img.onload = () => {
+                        originalImage = img;
+                        base64Image = getBase64Image(originalImage);
+                        enableControls(true);
+                        resolve();
+                    };
+                    img.onerror = reject;
+                    img.src = dataUrl;
                 });
 
-                const resultJson = await response.json();
-
-                // If error is returned or message indicates model deprecation/unavailability
-                if (!response.ok || resultJson.error) {
-                    const errorMsg = resultJson.error?.message || '';
-                    console.warn(`Model ${activeModel} pipeline failure:`, errorMsg);
-                    
-                    if (errorMsg.includes('longer available') || errorMsg.includes('not found') || response.status === 404) {
-                        return await fetchGeminiAnalysisWithFallback(apiKey, payloadData, modelMatrixIndex + 1);
-                    }
-                    throw new Error(errorMsg || `HTTP Core Exception Error: ${response.status}`);
-                }
-
-                return { resultData: resultJson, successfulModel: activeModel };
-            } catch (fetchError) {
-                console.error(`Error on network channel tracking index ${modelMatrixIndex}:`, fetchError);
-                // Fall back if there are remaining models left to evaluate
-                if (modelMatrixIndex < CHANNELS_MODEL_MATRIX.length - 1) {
-                    return await fetchGeminiAnalysisWithFallback(apiKey, payloadData, modelMatrixIndex + 1);
-                }
-                throw fetchError;
+                showToast('Image uploaded! Click "Generate Certificate" to begin analysis.', 'success');
+            } catch (error) {
+                console.error('Error during file upload and preview:', error);
+                showToast('Error loading image. Please try again.', 'error');
+                cleanupPreviewURL();
+                enableControls(false);
+                uploadedImagePreview.src = '';
+                imagePreviewSection.style.display = 'none';
             }
+        });
+        
+        // 2. Button to trigger certificate generation and rendering
+        generateCertBtn.addEventListener('click', async () => {
+            if (!originalImage || !base64Image) {
+                showToast('Please upload an image first.', 'error');
+                return;
+            }
+
+            generateCertBtn.textContent = 'Analyzing...';
+            generateCertBtn.disabled = true;
+            generateCertBtn.classList.add('btn-loading');
+
+            await analyzeAndFillFields(base64Image, originalImage);
+            
+            generateCertBtn.textContent = 'Generate Certificate';
+            generateCertBtn.disabled = false;
+            generateCertBtn.classList.remove('btn-loading');
+        });
+
+        // 3. Reset the application to its initial state
+        resetBtn.addEventListener('click', () => {
+            let userConfirmed = false;
+            try {
+                userConfirmed = confirm('Are you sure you want to reset? All current data will be lost.');
+            } catch (e) {
+                userConfirmed = true;
+            }
+
+            if (userConfirmed) {
+                cleanupPreviewURL();
+                originalImage = null;
+                base64Image = null;
+                lastAnalysisData = [];
+                fileInput.value = '';
+                uploadedImagePreview.src = '';
+                imagePreviewSection.style.display = 'none';
+                metricsEl.innerHTML = '';
+                certContainer.innerHTML = '';
+                enableControls(false);
+
+                showToast('Application reset successfully', 'success');
+            }
+        });
+
+        // --- Helper functions for controls and rendering ---
+        function enableControls(flag) {
+            resetBtn.disabled = !flag;
+            generateCertBtn.disabled = !flag;
+            downloadBtn.disabled = !flag;
+            downloadImageBtn.disabled = !flag;
         }
 
-        // Automated Core Image Processing Logic via Gemini API Core Vision Systems
-        analyseBtn.addEventListener('click', async () => {
-            const apiKey = apiKeyInput.value.trim() || localStorage.getItem('gemini_api_key');
-            if (!apiKey) {
-                notify('Missing API Configuration Key. Please enter and save an API key in the panel configuration parameters setup area.', 'error');
-                return;
-            }
+        // Draws the image onto the certificate canvas for the final document
+        function renderCertificateImage(canvas, img) {
+            const certCtx = canvas.getContext('2d');
+            certCtx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!img) return;
 
-            if (!base64ImageString) {
-                notify('No operational image file asset loaded into current view tracking register matrix.', 'error');
-                return;
-            }
-
-            // Set loading updates indicators state
-            analyseBtn.disabled = true;
-            analyseBtn.textContent = '🔄 Extracting...';
-            notify('Uploading cryptographic asset payload to Gemini multimodal pipelines. Parsing signature metrics data properties...', 'info');
-
-            const promptText = `Analyze this image of a gemstone for a gemological laboratory identification certificate. Return a clean JSON object containing mineral property metrics estimation fields. 
-            Do not provide text wrappers or code block strings around the response. Return strictly standard valid parseable JSON content matching exactly this property format:
-            {
-                "identification": "Natural Gemstone",
-                "variety": "Name of the gemstone variety based on structural visuals",
-                "weight": "Estimated hypothetical carat weight based on size style profile context (e.g. '2.50 Cts')",
-                "dimensions": "Estimated dimension metrics bounding matrix ranges (e.g. '8.2 x 6.5 mm')",
-                "shapeCut": "Visual shape cutting style configuration mapping (e.g. 'Oval Faceted')",
-                "color": "Dominant hues profile description parameters matching chromatic signature observed",
-                "refractiveIndex": "Typical standard scientific handbook documentation RI values range for this specific variety",
-                "comments": "Short text detailing microscopic observation assertions, internal structures signature patterns, thermal criteria indications, or typical diagnostic traits."
-            }`;
-
+            const cw = img.naturalWidth;
+            const ch = img.naturalHeight;
+            const scale = Math.min((canvas.width - 20) / cw, (canvas.height - 20) / ch);
+            const w = cw * scale;
+            const h = ch * scale;
+            const x = (canvas.width - w) / 2;
+            const y = (canvas.height - h) / 2;
+            
+            certCtx.fillStyle = '#ffffff';
+            certCtx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            certCtx.shadowColor = 'rgba(0,0,0,0.2)';
+            certCtx.shadowBlur = 10;
+            certCtx.shadowOffsetY = 4;
+            certCtx.drawImage(img, 0, 0, cw, ch, x, y, w, h);
+            certCtx.shadowColor = 'transparent';
+            certCtx.shadowBlur = 0;
+            certCtx.shadowOffsetY = 0;
+        }
+        
+        // Fallback function when AI data is unavailable
+        function getNotAvailableFallback() {
+            return [{
+                name: "Not Available", category: "Not Available", color: "Not Available", cut: "Not Available",
+                carat: "0", ratio: "Not Available", dims: "Not Available", clarity: "Not Available",
+                origin: "Not Available", astro: "Not Available"
+            }];
+        }
+        
+        // Helper to attempt fetch with a specific model
+        async function fetchWithModel(modelName, base64Data, prompt, apiKey) {
             const payload = {
                 contents: [{
+                    role: 'user',
                     parts: [
-                        { text: promptText },
-                        {
-                            inlineData: {
-                                mimeType: "image/jpeg",
-                                data: base64ImageString
-                            }
-                        }
+                        { text: prompt }, 
+                        { inlineData: { mimeType: "image/jpeg", data: base64Data } }
                     ]
-                }]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                "name": { "type": "STRING" },
+                                "category": { "type": "STRING" },
+                                "color": { "type": "STRING" },
+                                "cut": { "type": "STRING" },
+                                "carat": { "type": "STRING" },
+                                "ratio": { "type": "STRING" },
+                                "dims": { "type": "STRING" },
+                                "clarity": { "type": "STRING" },
+                                "origin": { "type": "STRING" },
+                                "astro": { "type": "STRING" }
+                            },
+                            required: ["name", "category", "color", "cut", "carat", "ratio", "dims", "clarity", "origin", "astro"]
+                        }
+                    }
+                }
+            };
+            
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Model ${modelName} failed (${response.status}): ${errorText}`);
+            }
+
+            const result = await response.json();
+            if (!result.candidates || result.candidates.length === 0 || !result.candidates[0].content || !result.candidates[0].content.parts || result.candidates[0].content.parts.length === 0) {
+                throw new Error(`Model ${modelName} returned an invalid response structure.`);
+            }
+
+            return JSON.parse(result.candidates[0].content.parts[0].text);
+        }
+
+        async function analyzeAndFillFields(base64Data, originalImg) {
+            const prompt = `Analyze all the stones, which could be gemstones or minerals, in the image. Identify their properties and provide the details in a JSON array. If the information is not available from the image, make an educated guess or mark as "Not Assessed".
+            
+            JSON schema for each object in the array:
+            - name: The specific type of gemstone or mineral (e.g., Pyrite, Hematite, Diamond, Sapphire).
+            - category: 'Gemstone' or 'Mineral'.
+            - color: The dominant color of the stone.
+            - cut: The cut style of the stone (e.g., Natural, Rough, Round Brilliant, Oval).
+            - carat: A realistic estimate of the stone's carat weight. Use a value like "2.55".
+            - ratio: The length-to-width ratio of the stone. Use a value like "1.25".
+            - dims: Estimated dimensions of the stone in millimeters. Use a format like "8.2 × 6.5 × 4.1 mm".
+            - clarity: An estimate of the stone's clarity grade (e.g., Opaque, Translucent, VS, SI, I).
+            - origin: A probable origin country/region for this type of stone.
+            - astro: The astrological use or association of the stone. Provide a concise, brief description in one to two sentences.`;
+
+            let apiKey = apiKeyInput.value.trim();
+            
+            // Check if running on localhost without an API key
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            if (isLocalhost && !apiKey) {
+                showToast('API Key is required when running on localhost. Please enter it in the settings above.', 'error', 6000);
+                apiKeyInput.style.border = '2px solid red';
+                setTimeout(() => apiKeyInput.style.border = '', 3000);
+                
+                lastAnalysisData = getNotAvailableFallback();
+                populateGemData(lastAnalysisData, originalImg);
+                return;
+            }
+
+            const selectedOption = modelPicker.value;
+            let modelsToTry = [];
+            
+            if (selectedOption === 'auto') {
+                // Auto-fallback sequence
+                modelsToTry = ['gemini-3-flash-preview', 'gemini-1.5-pro', 'gemini-1.5-flash'];
+            } else {
+                modelsToTry = [selectedOption];
+            }
+
+            let success = false;
+            
+            for (const model of modelsToTry) {
+                try {
+                    console.log(`Attempting analysis with model: ${model}`);
+                    const gemDataArray = await fetchWithModel(model, base64Data, prompt, apiKey);
+                    
+                    lastAnalysisData = gemDataArray;
+                    populateGemData(lastAnalysisData, originalImg);
+                    showToast(`Analysis complete (used ${model})!`, 'success');
+                    success = true;
+                    break; // Stop trying if successful
+                } catch (error) {
+                    console.warn(error.message);
+                    // If it's an API key issue (400/403), stop retrying immediately
+                    if (error.message.includes('400') || error.message.includes('403') || error.message.includes('API key not valid')) {
+                        showToast(`Invalid API Key or unauthorized request. Check your settings.`, 'error', 5000);
+                        break; 
+                    }
+                }
+            }
+            
+            if (!success) {
+                console.error("All model attempts failed.");
+                showToast(`Analysis failed across available models. Data marked as 'Not Available'.`, 'warning');
+                lastAnalysisData = getNotAvailableFallback();
+                populateGemData(lastAnalysisData, originalImg);
+            }
+        }
+        
+        function populateGemData(gemDataArray, originalImg) {
+            certContainer.innerHTML = '';
+            metricsEl.innerHTML = '';
+            
+            if (gemDataArray.length === 0) {
+                showToast('No stones were detected in the image.', 'error');
+                return;
+            }
+
+            // Populate analysis metrics for the first stone only, as a summary
+            const gemData = gemDataArray[0];
+            const m1 = document.createElement('div');
+            m1.className = 'metric';
+            m1.innerHTML = `<div class='k'>Stone Name</div><div class='v'>${gemData.name || 'Not Assessed'}</div>`;
+            const m2 = document.createElement('div');
+            m2.className = 'metric';
+            m2.innerHTML = `<div class='k'>Color</div><div class='v'>${gemData.color || 'Not Assessed'}</div>`;
+            const m3 = document.createElement('div');
+            m3.className = 'metric';
+            m3.innerHTML = `<div class='k'>Est. Carat</div><div class='v'>${gemData.carat || 'Not Assessed'}</div>`;
+            const m4 = document.createElement('div');
+            m4.className = 'metric';
+            m4.innerHTML = `<div class='k'>Cut Style</div><div class='v'>${gemData.cut || 'Not Assessed'}</div>`;
+            metricsEl.appendChild(m1);
+            metricsEl.appendChild(m2);
+            metricsEl.appendChild(m3);
+            metricsEl.appendChild(m4);
+
+            // Generate a single certificate for all stones
+            createSingleCertificate(gemDataArray, originalImg);
+        }
+        
+        function createSingleCertificate(gemDataArray, originalImg) {
+            const certId = `cert-main`;
+            const certNum = String(Date.now()).slice(-6);
+            const signer = genRandomIndianName();
+            const signatureInitials = getInitialSignature(signer);
+            
+            let stoneRowsHtml = '';
+
+            // Logic to handle single or multiple stones
+            if (gemDataArray.length === 1) {
+                const gem = gemDataArray[0];
+                const caratValue = parseFloat(gem.carat) || 0;
+                
+                const rattiConversion = (0.0054869684499314125 / 0.005);
+                const gramConversion = (0.001 / 0.005);
+                const mgConversion = (1 / 0.005);
+                
+                const ratiDisplay = (caratValue * rattiConversion).toFixed(3);
+                const gramDisplay = (caratValue * gramConversion).toFixed(3);
+                const mgDisplay = (caratValue * mgConversion).toFixed(3);
+                
+                stoneRowsHtml = `
+                    <div class="stone-entry">
+                        <div class="stone-heading">Stone: <input id="fName-0" class="inline" value="${gem.name || 'Not Assessed'}" /></div>
+                        <div class="ct-row"><div class="key">Category</div><div class="val"><input id="fCategory-0" class="inline" value="${gem.category || 'Not Assessed'}" /></div></div>
+                        <div class="ct-row"><div class="key">Colour</div><div class="val"><input id="fColor-0" class="inline" value="${gem.color || 'Not Assessed'}" /></div></div>
+                        <div class="ct-row"><div class="key">Cut</div><div class="val"><input id="fCut-0" class="inline" value="${gem.cut || 'Not Assessed'}" /></div></div>
+                        <div class="ct-row"><div class="key">Carat</div><div class="val"><input id="fCarat-0" data-unit="carat" class="inline-input" value="${caratValue}" /></div></div>
+                        <div class="ct-row"><div class="key">Ratti</div><div class="val"><input id="fRatti-0" data-unit="ratti" class="inline-input" value="${ratiDisplay}" /></div></div>
+                        <div class="ct-row"><div class="key">Gram</div><div class="val"><input id="fGram-0" data-unit="gram" class="inline-input" value="${gramDisplay}" /></div></div>
+                        <div class="ct-row"><div class="key">Milligram</div><div class="val"><input id="fMilligram-0" data-unit="milligram" class="inline-input" value="${mgDisplay}" /></div></div>
+                        <div class="ct-row"><div class="key">Ratio</div><div class="val"><input id="fRatio-0" class="inline" value="${gem.ratio || 'Not Assessed'}" /></div></div>
+                        <div class="ct-row"><div class="key">Dimensions (mm)</div><div class="val"><input id="fDims-0" class="inline" value="${gem.dims || 'Not Assessed'}" /></div></div>
+                        <div class="ct-row"><div class="key">Clarity</div><div class="val"><input id="fClarity-0" class="inline" value="${gem.clarity || 'Not Assessed'}" /></div></div>
+                        <div class="ct-row"><div class="key">Origin</div><div class="val"><div id="fOrigin-0" class="inline-div" contenteditable="true">${gem.origin || 'Not Assessed'}</div></div></div>
+                        <div class="ct-row"><div class="key">Astrological use</div><div class="val"><div id="fAstro-0" class="inline-div" contenteditable="true">${gem.astro || 'Not Assessed'}</div></div></div>
+                    </div>
+                `;
+            } else {
+                // Case 2: Multiple Stones - Concatenate values
+                const names = gemDataArray.map(g => g.name || 'Not Assessed').join(', ');
+                const categories = gemDataArray.map(g => g.category || 'Not Assessed').join(', ');
+                const colors = gemDataArray.map(g => g.color || 'Not Assessed').join(', ');
+                const carats = gemDataArray.map(g => g.carat || 'Not Assessed').join(', ');
+                
+                const rattiConversion = (0.0054869684499314125 / 0.005);
+                const gramConversion = (0.001 / 0.005);
+                const mgConversion = (1 / 0.005);
+
+                const rattiArray = gemDataArray.map(g => `${(parseFloat(g.carat) * rattiConversion).toFixed(3)}`);
+                const rattiDisplay = rattiArray.join(', ');
+                const gramArray = gemDataArray.map(g => `${(parseFloat(g.carat) * gramConversion).toFixed(3)}`);
+                const gramDisplay = gramArray.join(', ');
+                const mgArray = gemDataArray.map(g => `${(parseFloat(g.carat) * mgConversion).toFixed(3)}`);
+                const mgDisplay = mgArray.join(', ');
+                const ratios = gemDataArray.map(g => g.ratio || 'Not Assessed').join(', ');
+                const clarities = gemDataArray.map(g => g.clarity || 'Not Assessed').join(', ');
+                const origins = gemDataArray.map(g => g.origin || 'Not Assessed').join(', ');
+                
+                const astroCombined = gemDataArray.map(g => `• ${g.name}: ${g.astro}`).join(' ');
+
+                const allSameCut = new Set(gemDataArray.map(g => g.cut)).size === 1;
+                const cutDisplay = allSameCut ? gemDataArray[0].cut : 'Mixed';
+                const allSameDims = new Set(gemDataArray.map(g => g.dims)).size === 1;
+                const dimsDisplay = allSameDims ? `${gemDataArray[0].dims} (per Stone/Beads)` : 'Mixed';
+
+                stoneRowsHtml = `
+                    <div class="stone-entry">
+                        <div class="stone-heading">Stones: <div class="inline-div" contenteditable="true">${names}</div></div>
+                        <div class="ct-row"><div class="key">Category</div><div class="val"><div class="inline-div" contenteditable="true">${categories}</div></div></div>
+                        <div class="ct-row"><div class="key">Colour</div><div class="val"><div class="inline-div" contenteditable="true">${colors}</div></div></div>
+                        <div class="ct-row"><div class="key">Cut</div><div class="val"><div class="inline-div" contenteditable="true">${cutDisplay}</div></div></div>
+                        <div class="ct-row"><div class="key">Carat</div><div class="val"><div class="inline-div" contenteditable="true">${carats}</div></div></div>
+                        <div class="ct-row"><div class="key">Ratti</div><div class="val"><div class="inline-div" contenteditable="true">${rattiDisplay}</div></div></div>
+                        <div class="ct-row"><div class="key">Gram</div><div class="val"><div class="inline-div" contenteditable="true">${gramDisplay}</div></div></div>
+                        <div class="ct-row"><div class="key">Milligram</div><div class="val"><div class="inline-div" contenteditable="true">${mgDisplay}</div></div></div>
+                        <div class="ct-row"><div class="key">Ratio</div><div class="val"><div class="inline-div" contenteditable="true">${ratios}</div></div></div>
+                        <div class="ct-row"><div class="key">Dimensions (mm)</div><div class="val"><div class="inline-div" contenteditable="true">${dimsDisplay}</div></div></div>
+                        <div class="ct-row"><div class="key">Clarity</div><div class="val"><div class="inline-div" contenteditable="true">${clarities}</div></div></div>
+                        <div class="ct-row"><div class="key">Origin</div><div class="val"><div class="inline-div" contenteditable="true">${origins}</div></div></div>
+                        <div class="ct-row"><div class="key">Astrological use</div><div class="val"><div class="inline-div" contenteditable="true">${astroCombined}</div></div></div>
+                    </div>
+                `;
+            }
+
+            const certHTML = `
+                <div class="cert" id="${certId}">
+                    <div class="watermark">GTL</div>
+                    <div class="cert-head">
+                        <div>
+                            <div class="cert-title">GEM TESTING (IDENTIFICATION) LABORATORY</div>
+                            <div class="muted small">Certificate issued on behalf of <span id="fIssuedBy-0" class="issued-by-name inline-span" contenteditable="true" placeholder="Enter name"></span>, India</div>
+                        </div>
+                        <div class="cert-meta">
+                            <div class="small">Certificate #</div>
+                            <div id="certNo-0">${certNum}</div>
+                            <div class="small" style="margin-top:8px">Date</div>
+                            <input type="date" id="certDate-0" class="inline-input" style="text-align:right" value="${new Date().toISOString().split('T')[0]}" />
+                        </div>
+                    </div>
+
+                    <div class="cert-body">
+                        <div class="thumb"><canvas id="certCanvas-0" width="300" height="400"></canvas></div>
+                        <div class="cert-table">
+                            ${stoneRowsHtml}
+                        </div>
+                    </div>
+
+                    <div class="sig-row">
+                        <div class="sig-box" id="signBox-0"><img id="sigImg-0" style="max-width:220px;display:block;margin:0 auto"/><div id="sigName-0" class="muted">${signer}</div></div>
+                        <div class="sig-box" id="qrBoxWrap-0">
+                            <div id="qrCodeContainer-0" style="display:inline-block; margin:0 auto; padding: 6px; background: white; border: 1px solid #e2e8f0; border-radius: 8px;"></div>
+                            <div class="muted" style="margin-top: 6px; font-size: 11px;">Scan to Verify</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            certContainer.insertAdjacentHTML('beforeend', certHTML);
+            
+            const canvas = document.getElementById(`certCanvas-0`);
+            renderCertificateImage(canvas, originalImg);
+            
+            generateInitialSignatureDataURL(signatureInitials).then(data => {
+                const sigImgEl = document.getElementById(`sigImg-0`);
+                if (sigImgEl) {
+                    sigImgEl.src = data;
+                }
+            });
+
+            // Generate QR Code data payload and initialize QR Code
+            const verifyData = {
+                id: certNum,
+                dt: new Date().toISOString().split('T')[0],
+                gems: gemDataArray.map(g => ({
+                    n: g.name,
+                    c: g.carat,
+                    col: g.color,
+                    d: g.dims
+                }))
+            };
+            
+            // Encode the payload into base64 to ensure URL safety
+            const encodedData = btoa(encodeURIComponent(JSON.stringify(verifyData)));
+            const currentUrlBase = window.location.href.split('?')[0];
+            const verifyUrl = `${currentUrlBase}?verify=${encodedData}`;
+
+            setTimeout(() => {
+                new QRCode(document.getElementById("qrCodeContainer-0"), {
+                    text: verifyUrl,
+                    width: 90,
+                    height: 90,
+                    colorDark: "#0f172a",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            }, 100);
+
+            // Add event listeners for the new fields for single stones
+            if (gemDataArray.length === 1) {
+                const caratInput = document.getElementById('fCarat-0');
+                const rattiInput = document.getElementById('fRatti-0');
+                const gramInput = document.getElementById('fGram-0');
+                const mgInput = document.getElementById('fMilligram-0');
+
+                [caratInput, rattiInput, gramInput, mgInput].forEach(input => {
+                    if(input) {
+                        input.addEventListener('input', (event) => {
+                            updateCalculations(event.target.value, event.target.dataset.unit);
+                        });
+                    }
+                });
+            }
+        }
+        
+        // --- Auto-calculate and update weight fields ---
+        function updateCalculations(value, unit) {
+            let caratValue = parseFloat(value);
+            if (isNaN(caratValue)) {
+                caratValue = 0;
+            }
+
+            const conversionRattiToCarat = 0.005 / 0.0054869684499314125;
+            const conversionGramToCarat = 0.005 / 0.001; // 5
+            const conversionMilligramToCarat = 0.005 / 1; // 0.005
+
+            const conversions = {
+                carat: 1,
+                ratti: conversionRattiToCarat,
+                gram: conversionGramToCarat,
+                milligram: conversionMilligramToCarat
             };
 
+            let baseCarat = 0;
+            if (caratValue > 0) {
+                baseCarat = caratValue * conversions[unit];
+            }
+
+            const caratInput = document.getElementById('fCarat-0');
+            const rattiInput = document.getElementById('fRatti-0');
+            const gramInput = document.getElementById('fGram-0');
+            const mgInput = document.getElementById('fMilligram-0');
+
+            if (caratInput && rattiInput && gramInput && mgInput) {
+                const rattiConversion = (0.0054869684499314125 / 0.005);
+                const gramConversion = (0.001 / 0.005);
+                const mgConversion = (1 / 0.005);
+
+                if (unit !== 'carat') {
+                    caratInput.value = baseCarat.toFixed(3);
+                }
+                if (unit !== 'ratti') {
+                    rattiInput.value = (baseCarat * rattiConversion).toFixed(3);
+                }
+                if (unit !== 'gram') {
+                    gramInput.value = (baseCarat * gramConversion).toFixed(3);
+                }
+                if (unit !== 'milligram') {
+                    mgInput.value = (baseCarat * mgConversion).toFixed(3);
+                }
+            }
+        }
+
+        // --- Signature and Seal Generation ---
+        function genRandomIndianName() {
+            const first = ['Aarav', 'Arjun', 'Rohan', 'Vikram', 'Siddharth', 'Karan', 'Aman', 'Vivek', 'Rahul', 'Ravi', 'Manish', 'Deepak', 'Rakesh', 'Raj'];
+            const last = ['Sharma', 'Singh', 'Patel', 'Verma', 'Gupta', 'Reddy', 'Nair', 'Joshi', 'Iyer', 'Chopra'];
+            return first[Math.floor(Math.random() * first.length)] + ' ' + last[Math.floor(Math.random() * last.length)];
+        }
+        
+        function getInitialSignature(fullName) {
+            const parts = fullName.split(' ');
+            if (parts.length === 1) return parts[0].charAt(0);
+            const firstName = parts[0].charAt(0);
+            const lastName = parts[parts.length - 1];
+            return firstName + '. ' + lastName;
+        }
+        
+        async function generateInitialSignatureDataURL(signatureText) {
             try {
-                // Execute multi-channel evaluation
-                const fallbackResponse = await fetchGeminiAnalysisWithFallback(apiKey, payload);
-                
-                let outputText = fallbackResponse.resultData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                
-                // Content cleanup configurations sanitization passes strip markdown elements if generated
-                outputText = outputText.replace(/```json/g, '').replace(/```/g, '').trim();
+                await document.fonts.load('48px "Great Vibes"');
+            } catch (e) {}
+            
+            const c = document.createElement('canvas');
+            c.width = 320;
+            c.height = 100;
+            const ctx = c.getContext('2d');
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.fillStyle = 'transparent';
+            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.fillStyle = '#0f172a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '42px "Great Vibes", cursive';
+            
+            ctx.save();
+            ctx.translate(c.width / 2, c.height / 2);
+            ctx.rotate(-0.1);
+            ctx.fillText(signatureText, 0, 0);
+            ctx.restore();
+            
+            return c.toDataURL('image/png');
+        }
 
-                const parsedData = JSON.parse(outputText);
-                
-                // Distribute structural properties directly down onto local editable lab metric elements inputs
-                metaIdent.value = parsedData.identification || "Natural Gemstone";
-                metaVariety.value = parsedData.variety || "";
-                metaWeight.value = parsedData.weight || "";
-                metaDim.value = parsedData.dimensions || "";
-                metaCut.value = parsedData.shapeCut || "";
-                metaColor.value = parsedData.color || "";
-                metaOptical.value = parsedData.refractiveIndex || "";
-                metaComments.value = parsedData.comments || "";
+        // --- PDF and Image Generation ---
+        async function checkIssuedByNames() {
+            const issuedByFields = document.querySelectorAll('.issued-by-name');
+            let allFilled = true;
+            issuedByFields.forEach(field => {
+                if (!field.textContent.trim()) {
+                    field.style.border = '2px solid red';
+                    field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    allFilled = false;
+                } else {
+                    field.style.border = ''; // Reset border if filled
+                }
+            });
+            if (!allFilled) {
+                showToast('Please fill in the "Issued By" name for all certificates.', 'error');
+            }
+            return allFilled;
+        }
 
-                // Force manual evaluation context trigger layout display synchronization pipeline elements refresh passes
-                bindingInputs.forEach(b => {
-                    b.display.textContent = b.input.value || '-';
-                });
+        downloadBtn.addEventListener('click', async () => {
+            if (!await checkIssuedByNames()) return;
 
-                notify(`Gemstone analysis profile parsed successfully via [${fallbackResponse.successfulModel}]. Metrics have updated inside the live certificate canvas area.`, 'success');
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Preparing...';
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+                const certificates = document.querySelectorAll('.cert');
 
-            } catch (err) {
-                console.error(err);
-                notify(`System pipeline exception encountered: ${err.message}. Ensure your API key configuration parameters are set up accurately.`, 'error');
+                for (let i = 0; i < certificates.length; i++) {
+                    const node = certificates[i];
+                    const canvas = await html2canvas(node, { scale: 3, backgroundColor: '#ffffff' });
+                    const img = canvas.toDataURL('image/png');
+
+                    if (i > 0) {
+                        pdf.addPage();
+                    }
+
+                    const margin = 36;
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    const scaleFactor = Math.min((pdfWidth - margin * 2) / canvasWidth, (pdfHeight - margin * 2) / canvasHeight);
+                    const w = canvasWidth * scaleFactor;
+                    const h = canvasHeight * scaleFactor;
+                    const x = (pdfWidth - w) / 2;
+                    const y = (pdfHeight - h) / 2;
+
+                    pdf.addImage(img, 'PNG', x, y, w, h);
+                }
+
+                pdf.save('GTL-Certificates.pdf');
+                showToast('PDF downloaded successfully', 'success');
+            } catch (e) {
+                showToast('PDF error: ' + (e.message || e), 'error');
             } finally {
-                analyseBtn.disabled = false;
-                analyseBtn.textContent = '⚡ Analyze Image';
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Download PDF';
             }
         });
 
-        // Native Data Export Action Triggers handling frameworks
-        downloadPngBtn.addEventListener('click', () => {
-            notify('Preparing structural asset layers mapping for download...', 'info');
-            
-            setTimeout(() => {
-                const certBox = document.getElementById('certificateContainer');
-                
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <html>
-                    <head>
-                        <title>Print Certificate System Core</title>
-                        <script src="https://cdn.tailwindcss.com"><\/script>
-                        <style>
-                            body { font-family: sans-serif; background: #ffffff; padding: 20px; }
-                            .cert-border { border: 8px double #1e3a8a; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="max-w-xl mx-auto p-6 bg-white cert-border border-indigo-900 shadow-md">
-                            ${certBox.innerHTML}
-                        </div>
-                        <script>
-                            window.onload = function() { window.print(); window.close(); }
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-                notify('Document print interface dispatched to window runtime display manager.', 'success');
-            }, 500);
+        downloadImageBtn.addEventListener('click', async () => {
+            if (!await checkIssuedByNames()) return;
+
+            downloadImageBtn.disabled = true;
+            downloadImageBtn.textContent = 'Capturing...';
+            downloadImageBtn.classList.add('btn-loading');
+
+            try {
+                const certificates = document.querySelectorAll('.cert');
+                if (certificates.length === 1) {
+                    const canvas = await html2canvas(certificates[0], { scale: 3, backgroundColor: '#ffffff' });
+                    const imageURL = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.href = imageURL;
+                    link.download = `GTL-CERT.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast('Image downloaded successfully', 'success');
+                } else if (certificates.length > 1) {
+                    showToast('To download as an image, please download each certificate individually.', 'error');
+                } else {
+                    showToast('No certificates to download.', 'error');
+                }
+            } catch (e) {
+                showToast('Image download error: ' + (e.message || e), 'error');
+            } finally {
+                downloadImageBtn.disabled = false;
+                downloadImageBtn.textContent = 'Download Image';
+                downloadImageBtn.classList.remove('btn-loading');
+            }
         });
 
-        downloadPdfMockBtn.addEventListener('click', () => {
-            notify('ISO Standard PDF packaging engine initiated. Compiling vector fonts layers...', 'info');
-            setTimeout(() => {
-                window.print();
-            }, 400);
+        // --- Verification Scanner Logic (On Load) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const verifyPayload = params.get('verify');
+            
+            if (verifyPayload) {
+                try {
+                    // Decode the securely encoded payload
+                    const data = JSON.parse(decodeURIComponent(atob(verifyPayload)));
+                    
+                    // Swap views
+                    document.querySelector('.wrap').style.display = 'none';
+                    document.getElementById('verifyView').style.display = 'block';
+                    
+                    let tableHTML = `
+                        <tr><th>Certificate ID</th><td>#${data.id || 'N/A'}</td></tr>
+                        <tr><th>Date Authenticated</th><td>${data.dt || 'N/A'}</td></tr>
+                    `;
+                    
+                    if (data.gems && data.gems.length > 0) {
+                        data.gems.forEach((gem, idx) => {
+                            let prefix = data.gems.length > 1 ? `Stone ${idx+1} ` : '';
+                            tableHTML += `
+                                <tr><th>${prefix}Identification</th><td>${gem.n || 'N/A'}</td></tr>
+                                <tr><th>${prefix}Est. Weight</th><td>${gem.c || '0'} ct</td></tr>
+                                <tr><th>${prefix}Color</th><td>${gem.col || 'N/A'}</td></tr>
+                                <tr><th>${prefix}Dimensions</th><td>${gem.d || 'N/A'}</td></tr>
+                            `;
+                        });
+                    }
+                    
+                    document.getElementById('verifyTableBody').innerHTML = tableHTML;
+                    
+                    // Show a success notification
+                    setTimeout(() => showToast('Authentication successfully verified.', 'success'), 500);
+                } catch (e) {
+                    console.error("Verification decoding failed:", e);
+                    showToast('Invalid, corrupted, or expired verification link.', 'error', 6000);
+                }
+            }
         });
     </script>
 </body>
